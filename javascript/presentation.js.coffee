@@ -85,7 +85,7 @@ makeBusLine = (showLoading=false) ->
       .range([margin.left, svg.dimensions.width - margin.right]) 
     rScale = d3.scale.linear()
        .domain(d3.extent(data, (d) -> d.count))
-       .range([7, 15])
+       .range([7, 25])
        
     line = svg.g.append("path")
       .datum(xScale.range())
@@ -261,18 +261,21 @@ passengerExits = () ->
   
 passengerEnters = () ->
   bs = new BusStopBasic()
-  d3.range(bs.stop.count_enter).forEach (i) ->
-    psgr =
-      time_appear: getRandomRange(0, 3000)
-      x: bs.randX()
-      y: bs.randY()
-    addFn = () -> bs.addPassenger(psgr)
-    setTimeout(addFn, psgr.time_appear)
+  showEnters = () -> 
+    d3.range(bs.stop.count_enter).forEach (i) ->
+      psgr =
+        time_appear: getRandomRange(0, 3000)
+        x: bs.randX()
+        y: bs.randY()
+      addFn = () -> bs.addPassenger(psgr)
+      setTimeout(addFn, psgr.time_appear)
   
-  passengersBoardFn = () -> 
-    bs.passengers = []
-    bs.redrawPassengers(2000)
-  setTimeout(passengersBoardFn, 3200)
+    passengersBoardFn = () -> 
+      bs.passengers = []
+      bs.redrawPassengers(1000)
+    setTimeout(passengersBoardFn, 3200)
+
+  setInterval(showEnters, 5000)
 
 
 $ ->
@@ -285,22 +288,24 @@ $ ->
   d3.select('section.sunrise').style('background-color', 'black')
 
   $(document).bind 'deck.change', (event, fromSlide, toSlide) -> 
-    console.log(fromSlide, toSlide)
-    if $.deck('getSlide', toSlide).hasClass('sunrise')
+    toHasClass = (classNm) ->
+      $.deck('getSlide', toSlide).hasClass(classNm)
+    if toHasClass 'sunrise'
       makeSunChange('sunrise')
-    else if fromSlide == 6 & toSlide == 7
+    else if toHasClass 'linear'
       makeBusLine() # Run a bus along a line
-    else if fromSlide == 7 & toSlide == 8
+    else if toHasClass 'linear-load'
       makeBusLine(true) # Scale the bus by passenger load
-    else if fromSlide == 8 & toSlide == 9
+    else if toHasClass 'passenger-exits'
       passengerExits() # Show passengers exiting a bus
-    else if fromSlide == 9 & toSlide == 10
+    else if toHasClass 'passenger-arrivals'
       passengerEnters()
-    else if $.deck('getSlide', toSlide).hasClass('finished-product')
+    else if toHasClass 'finished-product'
       $('#iframe').html("<iframe src='http://urban-data.herokuapp.com'></iframe>")
       $('#next').show()
-    else if $.deck('getSlide', toSlide).hasClass('conclusion')
+    else if toHasClass 'sunset'
       $('#iframe').html('') # turn off dots on the bus
       $('#next').hide()
-    else if $.deck('getSlide', toSlide).hasClass('sunset')
+
       makeSunChange('sunset')
+      
