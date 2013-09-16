@@ -81,21 +81,65 @@
       .span8.offset2
         %h1 Run a bus along a line
         .bus-route
-  %section.linear
+  %section.linear-load
     .row
       .span8.offset2
         %h1 Scale the bus by passenger load
         .bus-route        
+
+  %section.passenger-exits
+    .row
+      .span8.offset2
+        %h1 
+          Show passengers exiting a bus
+          %br
+          %small using a transition to random final positions
+        .bus-stop
+  %section.passenger-arrivals
+    .row
+      .span8.offset2
+        %h1 
+          Show passengers waiting for a bus
+          %br
+          %small using a force layout
+        .bus-stop
+
+  %section.passenger-all-together
+    .row
+      .span8.offset2
+        :markdown
+          #All together now
+          
+          1. passengers cluster around the stop
+            - *force layout, from random point toward bus stop*
+          2. bus arrives at stop
+            - *transition from prev. stop*
+          3. passengers on bus exit 
+            - *transition to random point*
+          4. passengers at stop enter 
+            - *transition from stop to bus*
+          5. bus scales to new passenger load 
+            - *size transition* 
+          
+  %section.with-bus-image
+    .row
+      .span8.offset2
+        %h1 Moving past dots
+        
+  %section.finished-product
+    #iframe
+    #next 
+      %a{:href=>"#"} ->
   
-  
-  
-  %section.outro
-    %h3 We'd love to know what you thought!
-    %p 
-      Say hi on twitter:
-      %a{:href=>"https://twitter.com/ameliagreenhall"} @ameliagreenhall
-      %a{:href=>"https://twitter.com/adamgreenhall"} @adamgreenhall
-      and
-      %a{:href=>"https://twitter.com/jaredmcfarland"} @jaredmcfarland
+  %section.conclusion
+    .row
+      .span8.offset2  
+        %h3 We'd love to know what you thought!
+        %p
+          %a{:href=>"https://twitter.com/ameliagreenhall"} @ameliagreenhall
+          ,
+          %a{:href=>"https://twitter.com/adamgreenhall"} @adamgreenhall
+          and
+          %a{:href=>"https://twitter.com/jaredmcfarland"} @jaredmcfarland
   %section.sunset
     .bus-route
