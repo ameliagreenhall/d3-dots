@@ -4,14 +4,14 @@ colorOfDayScale.domain([0.0, 0.20, 0.21875, 0.23958333333333334, 0.25, 0.2708333
  0.7708333333333334, 0.7916666666666666, 0.8125, 0.8333333333333334, 0.8541666666666666, 0.875, 0.916].map(colorOfDayScale.invert))
 colorOfDayScale.range(["#01062d","#2b1782","#600eae","#9b13bb","#b13daf","#d086b5","#dfa7ac","#ebc8ab","#f3dfbc","#fef6aa","#fefdea","#fbf4a5","#f0d681","#fbf8da","#f5f1ba","#f0e435","#f4be51","#ec2523","#a82358","#712b80","#4a3f96","#188dba","#1c71a3","#173460","#020b2f"])
 
-initSVG = (selector, width=800) -> 
+initSVG = (selector, width=800, height=500) -> 
   margin =
     top: 20
     right: 20
     bottom: 20
     left: 20
   width = width - margin.left - margin.right
-  height = 500 - margin.top - margin.bottom
+  height = height - margin.top - margin.bottom
 
   dimensions = 
     margin: margin
@@ -37,7 +37,7 @@ makeSunChange = (kind='sunrise') ->
       .style('background-color', d3.rgb(colorOfDayScale(hour)))
   $('.bus-route', '.deck-next').empty()
 
-  svg = initSVG('.deck-next .bus-route', window.innerWidth)
+  svg = initSVG('.deck-next .bus-route', window.innerWidth, 200)
   width = svg.dimensions.width
 
   makeBus = () ->
@@ -65,6 +65,9 @@ makeSunChange = (kind='sunrise') ->
       .attr('x', finalPos)
     if kind == 'sunrise'
       trans.each('end', () -> $.deck('next'))
+    else
+      trans.each 'end', () ->
+        d3.select('#final-contact').transition().style('opacity', 1)
     return
   
   setTimeout(makeBus, dur * 12 + 500)
@@ -100,21 +103,32 @@ makeBusLine = (showLoading=false) ->
         cx: (d) -> xScale(d.distance)
         cy: yVal
   
-    bus = svg.g.append('circle').attr
-      class: 'bus'
-      cx: xScale(0)
-      cy: yVal
-      r: rScale(0)
-    
+    Tmax = data[data.length-1].time
     initDelay = 1000
     
-    d3.range(1, data.length).forEach (i) ->
-      delay = initDelay + data[i-1].time
-      dt = data[i].time - data[i-1].time
-      t = bus.transition().duration(dt).delay(delay)
-        .attr('cx', xScale(data[i].distance))
-      if showLoading
-        t.attr('r', rScale(data[i].count))
+    loopBus = () ->
+      console.log 'loopBus'
+      bus = svg.g.selectAll('circle.bus')
+        .data([1]).enter()
+        .append('circle').attr
+          class: 'bus'
+          cx: xScale(0)
+          cy: yVal
+          r: rScale(0)
+    
+      d3.range(1, data.length).forEach (i) ->
+        delay = initDelay + data[i-1].time
+        dt = data[i].time - data[i-1].time
+        t = bus.transition().duration(dt).delay(delay)
+          .attr('cx', xScale(data[i].distance))
+        if showLoading
+          t.attr('r', rScale(data[i].count))
+    
+      dropBus = () -> 
+        bus.data([]).exit().remove()
+      setTimeout(dropBus, initDelay + Tmax + 500)
+    
+    setInterval(loopBus, initDelay + Tmax + 600)
   
   return
 
@@ -286,7 +300,8 @@ $ ->
   $('#next').hide()  
 
   d3.select('section.sunrise').style('background-color', 'black')
-
+  d3.select('#final-contact').style('opacity', 0)
+  
   $(document).bind 'deck.change', (event, fromSlide, toSlide) -> 
     toHasClass = (classNm) ->
       $.deck('getSlide', toSlide).hasClass(classNm)
@@ -306,6 +321,4 @@ $ ->
     else if toHasClass 'sunset'
       $('#iframe').html('') # turn off dots on the bus
       $('#next').hide()
-
       makeSunChange('sunset')
-      
