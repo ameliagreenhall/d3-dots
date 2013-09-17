@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang='en'></html>
+<head>
+  <title>Dots on the Bus Demo</title>
+  <link href='/img/favicon.png' rel='icon' type='image/png'>
+  <link href='favicon.ico' rel='shortcut icon'>
+  <link href='/styles/leaflet.css' rel='stylesheet'>
+  <link href='/styles/deck.core.css' rel='stylesheet'>
+  <link href='/styles/bootstrap.min.css' rel='stylesheet'>
+  <link href='/styles/presentation.css' rel='stylesheet'>
+  <script src='/javascript/d3.js' type='text/javascript'></script>
+  <script src='/javascript/underscore.min.js' type='text/javascript'></script>
+  <script src='/javascript/jquery-1.9.1.min.js' type='text/javascript'></script>
+  <script src='/javascript/leaflet.js' type='text/javascript'></script>
+  <script src='/javascript/topojson.js' type='text/javascript'></script>
+  <script src='/javascript/bootstrap.js' type='text/javascript'></script>
+  <script src='/javascript/utils.js' type='text/javascript'></script>
+  <script src='/javascript/deck.core.js' type='text/javascript'></script>
+  <script src='/javascript/presentation.js' type='text/javascript'></script>
+  <link href='http://fonts.googleapis.com/css?family=Coustard' rel='stylesheet' type='text/css'>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+</head>
+<body>
+  <section class='intro'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>Dots on the Bus</h1>
+        <h2>
+          a transit viz. by
+          <a href='http://adamgreenhall.com'>Adam Greenhall</a>
+          ,
+          <a href='http://ameliagreenhall.com'>Amelia Greenhall</a>
+          , &
+          <a href='http://jaredonline.github.com/about/'>Jared McFarland.</a>
+        </h2>
+        <h2 class='contact'>
+          contact:
+          <a href='mailto: hello@adamgreenhall.com'>hello@adamgreenhall.com</a>
+        </h2>
+      </div>
+    </div>
+  </section>
+  <section class='sunrise'>
+    <div class='bus-route'></div>
+  </section>
+  <section class='about-data'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>What would you do with a week of transit data?</h1>
+        <ul>
+        <li>almost 2M lines of data, </li>
+        <li>from the transit agencies of SF (MUNI), Geneva, and Zurich </li>
+        <li>included schedule, actual arrival and passenger count data</li>
+        <li>lasers! (for passenger counts)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section class='idea'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>The idea</h1>
+        <img class='sketch' height='75%' src='img/sketches/early-sketch.jpg'>
+      </div>
+    </div>
+  </section>
+  <section class='idea'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>The idea</h1>
+        <img class='sketch' height='75%' src='img/sketches/unfurl-orig.jpg'>
+      </div>
+    </div>
+  </section>
+  <section class='idea'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>The idea</h1>
+        <img class='sketch' height='75%' src='img/sketches/unfurl.jpg'>
+      </div>
+    </div>
+  </section>
+  <section class='idea'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>The idea</h1>
+        <img class='sketch' height='75%' src='img/sketches/page-elements.jpg'>
+      </div>
+    </div>
+  </section>
+  <section class='linear'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>Run a bus along a line</h1>
+        <div class='bus-route'></div>
+      </div>
+    </div>
+  </section>
+  <section class='linear-load'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>Scale the bus by passenger load</h1>
+        <div class='bus-route'></div>
+      </div>
+    </div>
+  </section>
+  <section class='passenger-exits'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>
+          Show passengers exiting a bus
+          <br>
+          <small>using a transition to random final positions</small>
+        </h1>
+        <div class='bus-stop'></div>
+      </div>
+    </div>
+  </section>
+  <section class='passenger-arrivals'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>
+          Show passengers waiting for a bus
+          <br>
+          <small>using a force layout</small>
+        </h1>
+        <div class='bus-stop'></div>
+      </div>
+    </div>
+  </section>
+  <section class='passenger-all-together'>
+    <div class='row'>
+      <div class='span8 offset2'>
+        <h1>All together now</h1>
+        
+        <ol>
+        <li>passengers cluster around the stop
+        
+        <ul>
+        <li><em>force layout, from random point toward bus stop</em></li>
+        </ul></li>
+        <li>bus arrives at stop
+        
+        <ul>
+        <li><em>transition from prev. stop</em></li>
+        </ul></li>
+        <li>passengers on bus exit 
+        
+        <ul>
+        <li><em>transition to random point</em></li>
+        </ul></li>
+        <li>passengers at stop enter 
+        
+        <ul>
+        <li><em>transition from stop to bus</em></li>
+        </ul></li>
+        <li>bus scales to new passenger load 
+        
+        <ul>
+        <li><em>size transition</em> </li>
+        </ul></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <section class='finished-product'>
+    <div id='iframe'></div>
+    <div id='next'>
+      <a href='#'>-></a>
+    </div>
+  </section>
+  <section class='sunset conclusion'>
+    <div class='bus-route'></div>
+    <div class='row' id='final-contact'>
+      <div class='span8 offset2'>
+        <h2>
+          We'd love to know what you thought!
+          <br>
+          <a href='https://twitter.com/ameliagreenhall'>@ameliagreenhall</a>
+          ,
+          <a href='https://twitter.com/adamgreenhall'>@adamgreenhall</a>
+          and
+          <a href='https://twitter.com/jaredmcfarland'>@jaredmcfarland</a>
+        </h2>
+        <h2 class='contact'>
+          email:
+          <a href='mailto: hello@adamgreenhall.com'>hello@adamgreenhall.com</a>
+        </h2>
+      </div>
+    </div>
+  </section>
+</body>
